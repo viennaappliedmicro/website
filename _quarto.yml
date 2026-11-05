@@ -1,0 +1,37 @@
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - assets/4th_VAM_CfP.pdf
+    - assets/vam-workshop-2024_orig.jpg
+    - assets/vam-workshop-2023_orig.jpg
+    - assets/vam-workshop-2025_orig.jpg
+    - assets/vam-workshop-2026_orig.jpg
+    - assets/program_vam_workshop_oct_2025.pdf
+    - assets/programme_vam_2024_20min_presentations.pdf
+    - assets/programme_vam_2023_final_version.pdf
+    - assets/programme_vam_workshop_2026.pdf
+
+website:
+  title: "Vienna Applied Micro"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - calendar.qmd
+      - meetups.qmd
+      - workshop.qmd
+
+format:
+  html:
+   include-in-header:
+      - text: |
+          <meta name="referrer" content="strict-origin-when-cross-origin">
+   theme:
+      light: spacelab
+      dark: superhero
+   css: styles.css
+   toc: true
+
+editor: visual
+

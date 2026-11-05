@@ -1,0 +1,21 @@
+---
+title: "Meetups"
+---
+
+Our next meetup will take place on: December 7, 2026 at 6pm in Café Prückel Stubenring 24, 1010 Vienna
+
+```{r}
+#| echo: false
+#| fig-height: 10
+#| fig-width: 20
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=16.38023, lat=48.20752, popup="Cafe Prückel - Meetups")
+```
+
+### Register
+
+To join our next meetup, please register [**here**](https://docs.google.com/forms/d/e/1FAIpQLScoc4R6TUKeMf6XNm4DBgqsTqrklnKvft8Xc_fNXtnyJkWF6A/viewform?usp=publish-editor).
+
+If you do not have a gmail account, please just send a brief email to [viennaappliedmicroeconomics\@gmail.com](mailto:viennaappliedmicroeconomics@gmail.com) to register.
