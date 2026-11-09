@@ -1,21 +1,14 @@
+yaml
 name: Render and publish Quarto website
 
 on:
-  schedule:
-    - cron: "25 18 * * *"
-
-  # Allow manual runs from the GitHub Actions tab.
-  workflow_dispatch:
-
-  # Also rebuild when you push changes to the website source.
-  # Changes made only to docs/ do not trigger another workflow run.
   push:
     branches:
       - main
-    paths-ignore:
-      - "docs/**"
+  workflow_dispatch:
+  schedule:
+    - cron: "30 19 * * *"
 
-# Allows the workflow to commit the newly rendered docs/ files to the repo.
 permissions:
   contents: write
 
@@ -24,42 +17,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Download the repository contents.
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
-      # Install R and Quarto
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
+        with:
+          # Match the R version shown at the top of your renv.lock file
+          r-version: "4.5.3"
+          use-public-rspm: true
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      # Install R packages
-      - name: Install R packages
-        run: |
-          Rscript -e 'install.packages(c(
-            "leaflet",
-            "lubridate",
-            "rmarkdown"), repos = "https://cloud.r-project.org")'
+      - name: Restore R packages from renv.lock
+        uses: r-lib/actions/setup-renv@v2
 
-      # Render the Quarto website.
+      - name: Check rmarkdown
+        run: |
+          Rscript -e 'stopifnot(requireNamespace("rmarkdown", quietly = TRUE)); print(packageVersion("rmarkdown"))'
+
       - name: Render website
         run: quarto render
 
-      # Commit updated rendered files only if rendering produced a change.
-      - name: Commit and push website changes
+      - name: Commit rendered website
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add docs/
+          git add -A docs/
 
           if git diff --cached --quiet; then
-            echo "No changes to the rendered website."
+            echo "No rendered changes."
           else
             git commit -m "Automatically update website"
-            git push
+            git push origin HEAD:main
           fi
