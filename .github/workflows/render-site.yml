@@ -40,7 +40,10 @@ jobs:
       # Install R packages
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages(c("leaflet", "lubridate"), repos = "https://cloud.r-project.org")'
+          Rscript -e 'install.packages(c(
+            "leaflet",
+            "lubridate",
+            "rmarkdown"), repos = "https://cloud.r-project.org")'
 
       # Render the Quarto website.
       - name: Render website
