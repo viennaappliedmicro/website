@@ -2,7 +2,22 @@
 title: "Meetups"
 ---
 
-Our next meetup will take place on: December 7, 2026 at 6pm in Café Prückel Stubenring 24, 1010 Vienna
+```{r}
+#| message: false
+#| warning: false
+#| include: false
+library(lubridate)
+Sys.setlocale("LC_TIME", "English")
+meetups2627 = c(ymd("20261207"), ymd("20270111"), ymd("20270301"), 
+                ymd("20270404"), ymd("20270503"), ymd("20270607"))
+
+next_date = min(meetups2627[meetups2627 >= Sys.Date()])
+
+```
+
+Our next meetup will take place on **`r format(next_date, "%A, %B %d, %Y")`** at 6pm \
+in Café Prückel \
+Stubenring 24, 1010 Vienna
 
 ```{r}
 #| echo: false
