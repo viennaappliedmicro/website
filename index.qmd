@@ -14,18 +14,207 @@ The Vienna Applied Micro Economics Network is a joint initiative of the Central 
 #| warning: false
 #| include: false
 library(lubridate)
+library(calendar)
 Sys.setlocale("LC_TIME", "English")
 meetups2627h = c(ymd("20261207"), ymd("20270111"), ymd("20270301"), 
                 ymd("20270404"), ymd("20270503"), ymd("20270607"))
 
 next_dateh = min(meetups2627h[meetups2627h >= Sys.Date()])
+
+ics_url = "https://calendar.google.com/calendar/ical/viennaappliedmicroeconomics%40gmail.com/public/basic.ics"
+
+calendar_page_url = "https://calendar.google.com/calendar/embed?src=viennaappliedmicroeconomics%40gmail.com&ctz=Europe%2FVienna"
+
 ```
 
 
+```{r}
+#| echo: false
+#| results: asis
 
-### Upcoming Events
+# Calendar settings
+tz <- "Europe/Vienna"
 
-Next Meetup: **`r format(next_dateh, "%A, %B %d, %Y")`** \
+# Download calendar
+ics_file <- tempfile(fileext = ".ics")
+download.file(ics_url, ics_file, mode = "wb", quiet = TRUE)
+
+ics_lines <- readLines(ics_file, warn = FALSE, encoding = "UTF-8")
+
+# Unfold lines (iCalendar formatting)
+unfolded <- character()
+
+for (line in ics_lines) {
+  if (grepl("^[ \t]", line) && length(unfolded) > 0) {
+    unfolded[length(unfolded)] <-
+      paste0(unfolded[length(unfolded)], substring(line, 2))
+  } else {
+    unfolded <- c(unfolded, line)
+  }
+}
+
+# Extract individual events
+event_lines <- calendar::ic_list(unfolded)
+
+get_prop <- function(x, property) {
+  i <- which(names(x) == property |
+             startsWith(names(x), paste0(property, ";")))
+
+  if (length(i) == 0) return(NA_character_)
+
+  unname(x[i[1]])
+}
+
+# Parse events
+events <- lapply(event_lines, function(lines) {
+
+  p <- calendar::ic_vector(lines)
+
+  start_i <- which(names(p) == "DTSTART" |
+                   startsWith(names(p), "DTSTART;"))
+
+  if (length(start_i) == 0) return(NULL)
+
+  start_key <- names(p)[start_i[1]]
+  start_raw <- unname(p[start_i[1]])
+
+  title <- get_prop(p, "SUMMARY")
+  location <- get_prop(p, "LOCATION")
+  status <- get_prop(p, "STATUS")
+  event_url <- get_prop(p, "URL")
+
+  if (identical(status, "CANCELLED")) return(NULL)
+
+  if (is.na(title)) title <- "Untitled event"
+
+  # All-day events
+  all_day <- grepl("VALUE=DATE", start_key) ||
+             grepl("^\\d{8}$", start_raw)
+
+  if (all_day) {
+
+    start_date <- as.Date(start_raw, format = "%Y%m%d")
+    order_time <- as.POSIXct(start_date, tz = tz)
+    time_label <- ""
+
+  } else {
+
+    # Determine timezone
+    tz_match <- regmatches(
+      start_key,
+      regexpr("TZID=[^;]+", start_key)
+    )
+
+    event_tz <- if (length(tz_match) > 0) {
+      gsub('"', "", sub("^TZID=", "", tz_match))
+    } else {
+      tz
+    }
+
+    # UTC events end in Z
+    if (grepl("Z$", start_raw)) {
+      event_tz <- "UTC"
+      start_raw <- sub("Z$", "", start_raw)
+    }
+
+    fmt <- if (nchar(start_raw) == 15) {
+      "%Y%m%dT%H%M%S"
+    } else {
+      "%Y%m%dT%H%M"
+    }
+
+    order_time <- as.POSIXct(
+      strptime(start_raw, format = fmt, tz = event_tz)
+    )
+
+    if (is.na(order_time)) return(NULL)
+
+    start_date <- as.Date(order_time, tz = tz)
+    time_label <- format(order_time, "%H:%M", tz = tz)
+  }
+
+  data.frame(
+    title = title,
+    date = as.character(start_date),
+    time = time_label,
+    location = ifelse(is.na(location), "", location),
+    url = ifelse(is.na(event_url), "", event_url),
+    all_day = all_day,
+    order = as.numeric(order_time),
+    stringsAsFactors = FALSE
+  )
+})
+
+events <- Filter(Negate(is.null), events)
+
+# Find the next upcoming event
+if (length(events) == 0) {
+
+  cat("No upcoming events found in the calendar.")
+
+} else {
+
+  events <- do.call(rbind, events)
+
+  now <- Sys.time()
+  today <- as.Date(now, tz = tz)
+
+  future <- events[
+    ifelse(events$all_day,
+           as.Date(events$date) >= today,
+           events$order >= as.numeric(now)),
+  ]
+
+  if (nrow(future) == 0) {
+
+    cat("No upcoming events found.")
+
+  } else {
+
+    next_event <- future[which.min(future$order), ]
+
+    # English date formatting
+    old_locale <- Sys.getlocale("LC_TIME")
+    Sys.setlocale("LC_TIME", "C")
+
+    date_label <- format(
+      as.Date(next_event$date),
+      "%A, %d %B %Y"
+    )
+
+    Sys.setlocale("LC_TIME", old_locale)
+
+    # Display announcement
+    cat("###", "Next Applied Seminar", "\n\n", sep = " ")
+    cat("**", next_event$title, sep = "")
+    cat("**\n\n")
+    cat("**", date_label, sep = "")
+
+    if (next_event$time != "") {
+      cat(" · ", next_event$time, sep = "")
+    }
+
+    cat("**\n\n")
+
+    if (next_event$location != "") {
+      cat("Location: ", next_event$location, "\n\n", sep = "")
+    }
+
+    target_url <- if (next_event$url != "") {
+      next_event$url
+    } else {
+      calendar_page_url
+    }
+
+    cat("[View event in Google Calendar](", target_url, ")\n", sep = "")
+  }
+}
+```
+
+
+### Next Meetup: 
+
+**`r format(next_dateh, "%A, %B %d, %Y")`** \
 
 
 ### Contact
