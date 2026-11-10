@@ -13,7 +13,7 @@ project:
     - assets/programme_vam_workshop_2026.pdf
 
 website:
-  title: "Vienna Applied Micro"
+  title: "Vienna Applied Microeconomics Network"
   navbar:
     background: primary
     foreground: light

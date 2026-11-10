@@ -5,5 +5,29 @@ title: "Vienna Applied Microeconomics Network"
 We are a group of Vienna-based researchers working on topics in Labour and Applied Micro Economics, with the aim of meeting frequently to discuss research and policy, and to present our work. Our [**calendar**](calendar.qmd) provides information on research events and seminars taking place in Vienna on Labour and Applied Micro topics. Our [**monthly meetup**](meetups.qmd) takes place on the first Monday evening of each month during the academic year. During our [**annual workshop**](workshop.qmd), we present ongoing research on a broad range of Applied Economics topics.\
 \
 \
-The Vienna Applied Micro Economics Network is a joint initiative of the Central European University, the University of Vienna, and the Vienna University of Economics and Business.\
-​
+The Vienna Applied Micro Economics Network is a joint initiative of the Central European University, the University of Vienna, and the Vienna University of Economics and Business.
+
+
+
+```{r dates}
+#| message: false
+#| warning: false
+#| include: false
+library(lubridate)
+Sys.setlocale("LC_TIME", "English")
+meetups2627h = c(ymd("20261207"), ymd("20270111"), ymd("20270301"), 
+                ymd("20270404"), ymd("20270503"), ymd("20270607"))
+
+next_dateh = min(meetups2627h[meetups2627h >= Sys.Date()])
+```
+
+
+
+### Upcoming Events
+
+Next Meetup: **`r format(next_dateh, "%A, %B %d, %Y")`** \
+
+
+### Contact
+
+Email: [viennaappliedmicroeconomics\@gmail.com](mailto:viennaappliedmicroeconomics@gmail.com)

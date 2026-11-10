@@ -9,9 +9,7 @@ title: "Meetups"
 library(lubridate)
 Sys.setlocale("LC_TIME", "English")
 meetups2627 = c(ymd("20261207"), ymd("20270111"), ymd("20270301"), 
-                ymd("20270404"), ymd("20270503"), ymd("20270607"),
-                ymd("20271101")
-                )
+                ymd("20270404"), ymd("20270503"), ymd("20270607"))
 
 next_date = min(meetups2627[meetups2627 >= Sys.Date()])
 
