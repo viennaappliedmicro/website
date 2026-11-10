@@ -2,7 +2,6 @@ project:
   type: website
   output-dir: docs
   resources:
-    - assets/4th_VAM_CfP.pdf
     - assets/vam-workshop-2024_orig.jpg
     - assets/vam-workshop-2023_orig.jpg
     - assets/vam-workshop-2025_orig.jpg

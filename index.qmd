@@ -212,7 +212,7 @@ if (length(events) == 0) {
 ```
 
 
-### Next Meetup: 
+### Next Meetup
 
 **`r format(next_dateh, "%A, %B %d, %Y")`** \
 
