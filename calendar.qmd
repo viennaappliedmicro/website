@@ -3,7 +3,8 @@ title: "Calendar"
 ---
 
 ```{=html}
-<iframe src="https://calendar.google.com/calendar/embed?src=viennaappliedmicroeconomics%40gmail.com&amp;ctz=Europe%2FVienna" style="border: 0" width="800" height="600" frameborder="0" scrolling="no">
 
+<iframe 
+src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FVienna&showPrint=0&title=%20&src=dmllbm5hYXBwbGllZG1pY3JvZWNvbm9taWNzQGdtYWlsLmNvbQ&color=%237cb342" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no">
 </iframe>
 ```
