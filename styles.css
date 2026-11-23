@@ -1,1 +1,15 @@
 /* css styles */
+
+
+.quarto-title-block .quarto-title-banner {
+  min-height: 350px;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background-position: center center;
+  background-size: cover;
+}
+
+/* Hide the title inside the banner */
+.quarto-title-block .quarto-title > h1.title {
+  display: none !important;
+}
