@@ -8,7 +8,7 @@
       }
     ]
   },
-  "Packages": {ca
+  "Packages": {
     "DBI": {
       "Package": "DBI",
       "Version": "1.3.0",
