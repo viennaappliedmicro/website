@@ -15,7 +15,7 @@ website:
   title: "Vienna Applied Micro Economics Network"
   navbar:
     background: primary
-    foreground: light
+    foreground: "#ffffff"
     left:
       - href: index.qmd
         text: Home
